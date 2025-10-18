@@ -29,3 +29,18 @@ temperature_units = [
     "fahrenheit",
     "kelvin"
 ]
+
+ingredient_density_data = {
+    "granulated sugar": 200,
+    "icing sugar": 110,
+    "butter": 227,
+    "water": 240,
+    "milk": 245,
+    "all-pourpose flour": 125,
+    "whole wheat flour": 130,
+    "bread flour": 120,
+    "chocolate chips": 170,
+    "cocoa powder": 92,
+    "baking soda": 272,
+    "maple syrup": 340,
+}

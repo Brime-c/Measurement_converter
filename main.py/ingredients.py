@@ -1,4 +1,4 @@
-from factors import mass_conversion_factors, length_conversion_factors, volume_conversion_factors, temperature_units
+from factors import mass_conversion_factors, length_conversion_factors, volume_conversion_factors, temperature_units, ingredient_density_data
 
 class Ingredient:
     def __init__(self, name, value, unit):
@@ -29,6 +29,22 @@ class Ingredient:
                 self.to_fahrenheit()
             elif target_unit == "kelvin":
                 self.to_kelvin()
+        elif is_mass_unit(self.unit) and is_volume_unit(target_unit):
+            if self.name in ingredient_density_data:
+                value_in_grams = self.value * mass_conversion_factors[self.unit]
+                value_in_cups = value_in_grams / ingredient_density_data[self.name]
+                value_in_ml_base = value_in_cups * volume_conversion_factors["cup"]
+                final_value = value_in_ml_base / volume_conversion_factors[target_unit]
+                self.value = final_value
+                self.unit = target_unit
+        elif is_volume_unit(self.unit) and is_mass_unit(target_unit):
+            if self.name in ingredient_density_data:
+                value_in_ml = self.value * volume_conversion_factors[self.unit]
+                value_in_cups = value_in_ml / volume_conversion_factors["cup"]
+                value_in_grams_base = value_in_cups * ingredient_density_data[self.name]
+                final_value = value_in_grams_base / volume_conversion_factors[target_unit]
+                self.value = final_value
+                self.unit = target_unit
         else:
             raise Exception ("Not a valid conversion")
 

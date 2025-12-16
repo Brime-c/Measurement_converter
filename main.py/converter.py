@@ -4,26 +4,28 @@ from ingredients import Ingredient, is_mass_unit, is_length_unit, is_temperature
 from string_parse import INGREDIENT_PARSE_PATTERN, parse_ingredient_string
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
+    # Expecting 3 arguments: script_name, ingredient_string, target_unit
+    if len(sys.argv) == 3:
         ingredient_string = sys.argv[1]
-        value, unit, name = parse_ingredient_string(ingredient_string)
-    
-    if value is not None:
-        my_ingredient = Ingredient(name = name, value = value, unit = unit)
-        print(f"Parsed Ingredient {my_ingredient.value} {my_ingredient.unit} {my_ingredient.name}")
-
-        if my_ingredient.unit in mass_conversion_factors:
-            print(f"Converting {my_ingredient.value}{my_ingredient.unit} to kg...")
-            my_ingredient.convert_to("kg")
-            print(f"Converted: {my_ingredient.value}{my_ingredient.unit} {my_ingredient.name}")
+        target_conversion_unit = sys.argv[2].lower() # Convert target unit to lowercase for consistency
         
-        elif my_ingredient.unit in volume_conversion_factors:
-            print(f"Converting {my_ingredient.value}{my_ingredient.unit} to ml...")
-            my_ingredient.convert_to("ml")
-            print(f"Converted: {my_ingredient.value}{my_ingredient.unit} {my_ingredient.name}")
+        value, unit, name = parse_ingredient_string(ingredient_string)
 
-         # Add more conversion examples here...
+        if value is not None:
+            my_ingredient = Ingredient(name=name, value=value, unit=unit)
+            
+            print(f"Original: {my_ingredient.value} {my_ingredient.unit} {my_ingredient.name}")
+            
+            try:
+                my_ingredient.convert_to(target_conversion_unit)
+                print(f"Converted: {my_ingredient.value} {my_ingredient.unit} {my_ingredient.name}")
+            except Exception as e:
+                print(f"Conversion Error: {e}")
+            
         else:
-            print(f"Error: Could not parse '{ingredient_string}'. Please check the format.")
+            print(f"Error: Could not parse ingredient '{ingredient_string}'. Please check the format.")
     else:
-        print("Usage: python your_script_name.py \"<ingredient string>\"")    
+        print("Usage: python your_script_name.py \"<ingredient string>\" <target_unit>")
+        print("Example: python your_script_name.py \"2.5 cups flour\" ml")
+        print("Example: python your_script_name.py \"1/2 tsp salt\" g")
+        print("Example: python your_script_name.py \"20 celsius water\" fahrenheit")

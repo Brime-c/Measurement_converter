@@ -1,4 +1,7 @@
+import sys
 from factors import mass_conversion_factors, length_conversion_factors, volume_conversion_factors, temperature_units, ingredient_density_data
+from string_parse import INGREDIENT_PARSE_PATTERN, parse_ingredient_string
+
 
 class Ingredient:
     def __init__(self, name, value, unit):
@@ -10,17 +13,17 @@ class Ingredient:
         if is_mass_unit(self.unit) and is_mass_unit(target_unit):
             first_step = self.value * mass_conversion_factors[self.unit]
             second_step = first_step / mass_conversion_factors[target_unit]
-            self.value = second_step
+            self.value = round(second_step, 2)
             self.unit = target_unit
         elif is_volume_unit(self.unit) and is_volume_unit(target_unit):
             first_step = self.value * volume_conversion_factors[self.unit]
             second_step = first_step / volume_conversion_factors[target_unit]
-            self.value = second_step
+            self.value = round(second_step, 2)
             self.unit = target_unit
         elif is_length_unit(self.unit) and is_length_unit(target_unit):
             first_step = self.value * length_conversion_factors[self.unit]
             second_step = first_step / length_conversion_factors[target_unit]
-            self.value = second_step
+            self.value = round(second_step, 2)
             self.unit = target_unit
         elif is_temperature_unit(self.unit) and is_temperature_unit(target_unit):
             if target_unit == "celsius":
@@ -34,8 +37,8 @@ class Ingredient:
                 value_in_grams = self.value * mass_conversion_factors[self.unit]
                 value_in_cups = value_in_grams / ingredient_density_data[self.name]
                 value_in_ml_base = value_in_cups * volume_conversion_factors["cup"]
-                final_value = value_in_ml_base / volume_conversion_factors[target_unit]
-                self.value = final_value
+                final_value = value_in_ml_base / mass_conversion_factors[target_unit]
+                self.value = round(final_value, 2)
                 self.unit = target_unit
         elif is_volume_unit(self.unit) and is_mass_unit(target_unit):
             if self.name in ingredient_density_data:
@@ -43,7 +46,7 @@ class Ingredient:
                 value_in_cups = value_in_ml / volume_conversion_factors["cup"]
                 value_in_grams_base = value_in_cups * ingredient_density_data[self.name]
                 final_value = value_in_grams_base / volume_conversion_factors[target_unit]
-                self.value = final_value
+                self.value = round(final_value, 2)
                 self.unit = target_unit
         else:
             raise Exception ("Not a valid conversion")
@@ -59,7 +62,7 @@ class Ingredient:
         else:
             raise Exception ("Unit not supported")
         self.unit = "fahrenheit"
-        self.value = converted
+        self.value = round(converted, 2)
     
     def to_celsius(self):
         if self.unit == "fahrenheit":
@@ -71,7 +74,7 @@ class Ingredient:
         else:
             raise Exception ("Unit not supported")
         self.unit = "celsius"
-        self.value = converted
+        self.value = round(converted, 2)
     
     def to_kelvin(self):
         if self.unit == "celsius":
@@ -84,7 +87,7 @@ class Ingredient:
         else:
             raise Exception ("Unit not supported")
         self.unit = "kelvin"
-        self.value = converted
+        self.value = round(converted, 2)
 
 def is_mass_unit(unit):
     return unit in mass_conversion_factors

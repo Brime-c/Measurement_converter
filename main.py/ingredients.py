@@ -1,6 +1,5 @@
-import sys
 from factors import mass_conversion_factors, length_conversion_factors, volume_conversion_factors, temperature_units, ingredient_density_data
-from string_parse import INGREDIENT_PARSE_PATTERN, parse_ingredient_string
+from helpers import is_mass_unit, is_length_unit, is_temperature_unit, is_volume_unit
 
 
 class Ingredient:
@@ -37,7 +36,7 @@ class Ingredient:
                 value_in_grams = self.value * mass_conversion_factors[self.unit]
                 value_in_cups = value_in_grams / ingredient_density_data[self.name]
                 value_in_ml_base = value_in_cups * volume_conversion_factors["cup"]
-                final_value = value_in_ml_base / mass_conversion_factors[target_unit]
+                final_value = value_in_ml_base / volume_conversion_factors[target_unit]
                 self.value = round(final_value, 2)
                 self.unit = target_unit
         elif is_volume_unit(self.unit) and is_mass_unit(target_unit):
@@ -45,7 +44,7 @@ class Ingredient:
                 value_in_ml = self.value * volume_conversion_factors[self.unit]
                 value_in_cups = value_in_ml / volume_conversion_factors["cup"]
                 value_in_grams_base = value_in_cups * ingredient_density_data[self.name]
-                final_value = value_in_grams_base / volume_conversion_factors[target_unit]
+                final_value = value_in_grams_base / mass_conversion_factors[target_unit]
                 self.value = round(final_value, 2)
                 self.unit = target_unit
         else:
@@ -88,15 +87,3 @@ class Ingredient:
             raise Exception ("Unit not supported")
         self.unit = "kelvin"
         self.value = round(converted, 2)
-
-def is_mass_unit(unit):
-    return unit in mass_conversion_factors
-
-def is_volume_unit(unit):
-    return unit in volume_conversion_factors
-
-def is_length_unit(unit):
-    return unit in length_conversion_factors
-
-def is_temperature_unit(unit):
-    return unit in temperature_units
